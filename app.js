@@ -7,6 +7,10 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
+var categoriesRouter = require('./routes/categories'); 
+var sequelize = require('./models/index');
+var Category = require('./models/category'); // Impor model Category
+var Product = require('./models/product');
 
 var app = express();
 
@@ -23,6 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
+app.use('/categories', categoriesRouter); 
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -40,4 +47,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+sequelize.sync()
+  .then(() => {
+    console.log('Database synchronized');
+  })
+  .catch(err => {
+    console.error('Error synchronizing database:', err);
+  });
 module.exports = app;
